@@ -242,7 +242,7 @@ def trim(s):
 
 ###############################################################################
 # Benchmark classifiers
-def benchmark(clf):
+def benchmark(clf, name):
     print('_' * 80)
     print("Training: ")
     print(clf)
@@ -280,19 +280,21 @@ def benchmark(clf):
         print(metrics.confusion_matrix(y_test, pred))
 
     print()
-    clf_descr = str(clf).split('(')[0]
+    #clf_descr = str(clf).split('(')[0]
+    clf_descr = name
     return clf_descr, score, train_time, test_time
 
 #n_neighbors=15, weights='distance'
 #loss='hinge', penalty='l2', alpha=1e-3, n_iter=5, random_state=42
 results = []
 for clf, name in (
+        (BernoulliNB(), "Naive Bayes"),
         (SGDClassifier(), "SGDClassifier"),
-        (LinearSVC(), "LinearSVC"),
+        (LinearSVC(), "SVM"),
         (KNeighborsClassifier(), "kNN")):
     print('=' * 80)
     print(name)
-    results.append(benchmark(clf))
+    results.append(benchmark(clf, name))
 '''
 for penalty in ["l2", "l1"]:
     print('=' * 80)
@@ -318,10 +320,10 @@ print("NearestCentroid (aka Rocchio classifier)")
 results.append(benchmark(NearestCentroid()))
 '''
 # Train sparse Naive Bayes classifiers
-print('=' * 80)
-print("Naive Bayes")
-results.append(benchmark(MultinomialNB()))
-results.append(benchmark(BernoulliNB()))
+#print('=' * 80)
+#print("Naive Bayes")
+#results.append(benchmark(MultinomialNB()))
+#results.append(benchmark(BernoulliNB()))
 
 '''
 print('=' * 80)
@@ -345,9 +347,9 @@ test_time = np.array(test_time) / np.max(test_time)
 
 plt.figure(figsize=(12, 8))
 plt.title("Score")
-plt.barh(indices, score, .2, label="score", color='r')
-plt.barh(indices + .3, training_time, .2, label="training time", color='g')
-plt.barh(indices + .6, test_time, .2, label="test time", color='b')
+plt.barh(indices, score, .2, label="score", color='b')
+#plt.barh(indices + .3, training_time, .2, label="training time", color='g')
+#plt.barh(indices + .6, test_time, .2, label="test time", color='y')
 plt.yticks(())
 plt.legend(loc='best')
 plt.subplots_adjust(left=.25)
@@ -355,6 +357,6 @@ plt.subplots_adjust(top=.95)
 plt.subplots_adjust(bottom=.05)
 
 for i, c in zip(indices, clf_names):
-    plt.text(-.3, i, c)
+    plt.text(-0.2, i, c)
 
 plt.show()
